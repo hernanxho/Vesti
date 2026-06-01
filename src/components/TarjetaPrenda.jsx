@@ -1,6 +1,6 @@
-import { Trash2 } from 'lucide-react'
+import { Trash2, Pencil } from 'lucide-react'
 
-function TarjetaPrenda({ prenda, onEliminar }) {
+function TarjetaPrenda({ prenda, onEliminar, onEditar }) {
   return (
     <div className="group relative bg-white rounded-2xl overflow-hidden border border-[#E5E7EB] hover:border-[#D1D5DB] transition-all duration-200 hover:shadow-sm">
       <div className="aspect-[3/4] bg-[#F9F9F9] overflow-hidden">
@@ -18,6 +18,7 @@ function TarjetaPrenda({ prenda, onEliminar }) {
           </div>
         )}
       </div>
+
       <div className="p-3">
         <p className="font-medium text-[#111111] text-sm truncate">{prenda.nombre}</p>
         <div className="flex items-center justify-between mt-1">
@@ -32,12 +33,23 @@ function TarjetaPrenda({ prenda, onEliminar }) {
           </span>
         )}
       </div>
-      <button
-        onClick={() => onEliminar(prenda.id, prenda.imagen_url)}
-        className="absolute top-2 right-2 p-1.5 bg-white/90 backdrop-blur-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-[#FEF2F2] hover:text-red-500 text-[#9CA3AF] border border-[#E5E7EB]"
-      >
-        <Trash2 size={13} />
-      </button>
+
+      {/* Botones — aparecen al hacer hover */}
+      <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <button
+          onClick={() => onEditar(prenda)}
+          className="p-1.5 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-[#F5F5F5] text-[#6B7280] border border-[#E5E7EB] transition-colors"
+        >
+          <Pencil size={13} />
+        </button>
+        <button
+          onClick={() => onEliminar(prenda.id, prenda.imagen_url)}
+          className="p-1.5 bg-white/90 backdrop-blur-sm rounded-lg hover:bg-[#FEF2F2] hover:text-red-500 text-[#9CA3AF] border border-[#E5E7EB] transition-colors"
+        >
+          <Trash2 size={13} />
+        </button>
+      </div>
+
     </div>
   )
 }

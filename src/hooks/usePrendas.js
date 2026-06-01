@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '../supabase'
 
 export function usePrendas() {
@@ -6,11 +6,7 @@ export function usePrendas() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    obtenerPrendas()
-  }, [])
-
-  async function obtenerPrendas() {
+  const obtenerPrendas = useCallback(async () => {
     setCargando(true)
     const { data, error } = await supabase
       .from('prendas')
@@ -20,7 +16,11 @@ export function usePrendas() {
     if (error) setError(error.message)
     else setPrendas(data)
     setCargando(false)
-  }
+  }, [])
+
+  useEffect(() => {
+    obtenerPrendas()
+  }, [obtenerPrendas])
 
   async function eliminarPrenda(id, imagenUrl) {
     if (imagenUrl) {
@@ -31,5 +31,16 @@ export function usePrendas() {
     if (!error) setPrendas(prev => prev.filter(p => p.id !== id))
   }
 
-  return { prendas, cargando, error, obtenerPrendas, eliminarPrenda }
+  async function actualizarPrenda(id, datos) {
+    const { error } = await supabase
+      .from('prendas')
+      .update(datos)
+      .eq('id', id)
+    if (!error) {
+      setPrendas(prev => prev.map(p => p.id === id ? { ...p, ...datos } : p))
+    }
+    return { error }
+  }
+
+  return { prendas, cargando, error, obtenerPrendas, eliminarPrenda, actualizarPrenda }
 }
